@@ -254,10 +254,7 @@ definitions:
         type: string
         example: Ivan Petrov
 
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
+host: "somehost.ru"
 schemes:
-  - https
-# Added by API Auto Mocking Plugin
-# Added by API Auto Mocking Plugin
-basePath: /itimofeev/task2trip/1.0.0
+  - http
+basePath: "/api/v1"

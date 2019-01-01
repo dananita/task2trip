@@ -4,6 +4,7 @@ package restapi
 
 import (
 	"crypto/tls"
+	"github.com/itimofeev/task2trip/backend/handlers"
 	"net/http"
 
 	errors "github.com/go-openapi/errors"
@@ -62,9 +63,7 @@ func configureAPI(api *operations.Task2TripAPI) http.Handler {
 	api.UsersUserLoginHandler = users.UserLoginHandlerFunc(func(params users.UserLoginParams) middleware.Responder {
 		return middleware.NotImplemented("operation users.UserLogin has not yet been implemented")
 	})
-	api.UsersUserSignupHandler = users.UserSignupHandlerFunc(func(params users.UserSignupParams) middleware.Responder {
-		return middleware.NotImplemented("operation users.UserSignup has not yet been implemented")
-	})
+	api.UsersUserSignupHandler = handlers.UserSignupHandlerFunc
 
 	api.ServerShutdown = func() {}
 
