@@ -1,0 +1,263 @@
+swagger: '2.0'
+info:
+  description: API for task2trip
+  version: 1.0.0
+  title: Task2Trip API
+  contact:
+    email: ilya.ufo@gmail.com
+
+paths:
+  /task:
+    get:
+      tags:
+        - tasks
+      security:
+        - AuthToken: []
+      summary: search for tasks according to filters
+      operationId: searchTasks
+      description: |
+        By passing in the appropriate options, you can search for
+        available tasks in the system
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up tasks
+          required: false
+          type: string
+        - in: query
+          name: categoryId
+          required: false
+          type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          type: integer
+          minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          type: integer
+          minimum: 0
+          maximum: 50
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Task'
+        400:
+          description: bad input parameter
+
+    put:
+      tags:
+        - tasks
+      security:
+        - AuthToken: []
+      summary: adds a task
+      operationId: createTask
+      description: Creates new task
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: task
+          description: Task item to add
+          schema:
+            $ref: '#/definitions/TaskCreateParams'
+      responses:
+        201:
+          $ref: '#/definitions/Task'
+        400:
+          description: invalid input, object invalid
+
+  /task/{taskId}/offer:
+    get:
+      tags:
+        - offers
+      security:
+        - AuthToken: []
+      summary: get offers for task
+      operationId: listOffers
+      parameters:
+        - in: path
+          name: taskId
+          type: string
+          required: true
+        - in: body
+          name: task
+          description: Task item to add
+          schema:
+            $ref: '#/definitions/OfferCreateParams'
+      produces:
+        - application/json
+      responses:
+        200:
+          description: list of categories
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Offer'
+
+  /category:
+    get:
+      tags:
+        - categories
+      summary: get list of categories
+      operationId: listCategories
+      produces:
+        - application/json
+      responses:
+        200:
+          description: list of categories
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Category'
+
+  /user/login:
+    get:
+      tags:
+        - users
+      summary: users login
+      operationId: userLogin
+      produces:
+        - application/json
+      responses:
+        200:
+          description: list of categories
+          schema:
+            type: object
+            properties:
+              authToken:
+                type: string
+  /user:
+    post:
+      tags:
+        - users
+      summary: user sign up
+      operationId: userSignup
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: task
+          schema:
+            $ref: '#/definitions/UserCreateParams'
+      responses:
+        200:
+          description: list of categories
+          schema:
+            $ref: '#/definitions/User'
+
+securityDefinitions:
+  AuthToken:
+    type: apiKey
+    in: header
+    name: X-Auth-Token
+
+definitions:
+  TaskCreateParams:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+        description: more detailed description of the task
+      category_id:
+        type: string
+      budgetEstimate:
+        type: integer
+        description: budget estimate that traveller expect to spend on this task
+        example: 100
+    required:
+      - name
+      - category_id
+      - description
+      - budgetEstimate
+
+  OfferCreateParams:
+    type: object
+    properties:
+      comment:
+        type: string
+      price:
+        type: integer
+    required:
+      - price
+
+  UserCreateParams:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+      - email
+      - password
+
+  Task:
+    type: object
+    required:
+      - id
+      - name
+      - category
+      - createDate
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        example: Buy a vodka
+      createDate:
+        type: string
+        format: date-time
+      category:
+        $ref: '#/definitions/Category'
+
+  Category:
+    required:
+      - name
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        example: Guides
+
+  User:
+    required:
+      - name
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        example: Ivan Petrov
+
+  Offer:
+    required:
+      - name
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        example: Ivan Petrov
+
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+schemes:
+  - https
+# Added by API Auto Mocking Plugin
+# Added by API Auto Mocking Plugin
+basePath: /itimofeev/task2trip/1.0.0
