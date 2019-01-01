@@ -5,6 +5,13 @@ SWAGGER_IMAGE=quay.io/goswagger/swagger:v0.17.2
 REPO_NAME=task2trip
 REPO_PATH=github.com/itimofeev/$(REPO_NAME)
 
+godep-save:
+	go get github.com/tools/godep
+	godep save ./...
+
+godep-restore:
+	go get github.com/tools/godep
+	godep restore -v ./...
 
 deploy-db:
 	docker stack deploy --compose-file tools/db.docker-stack.yml db
@@ -12,16 +19,18 @@ deploy-db:
 deploy:
 	docker stack deploy --compose-file tools/docker-stack.yml db
 
-gen-server: download
+gen-server:
+	mkdir -p rest
 	docker run --rm -v $(GOPATH):/go/ -w /go/src/$(REPO_PATH) -t $(SWAGGER_IMAGE) \
 		generate server \
-		--target=server \
+		--target=rest \
 		-f tools/swagger.yml
 
 gen-client:
+	mkdir -p rest
 	docker run --rm -v $(GOPATH):/go/ -w /go/src/$(REPO_PATH) -t $(SWAGGER_IMAGE) \
 		generate client \
-		--target=$(REPO_NAME) \
+		--target=rest \
 		-f tools/swagger.yml
 
 download:
@@ -77,4 +86,4 @@ import-products:
 		&& docker exec `docker ps -q -f name=db_db` psql postgres postgres -f /cmd.sql
 
 build:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o $$GOPATH/bin/linux_amd64/task2trip $(REPO_PATH)/server/cmd/api-for-task2trip-server
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o $$GOPATH/bin/linux_amd64/task2trip $(REPO_PATH)/rest/cmd/task2-trip-server
