@@ -5,14 +5,17 @@ package restapi
 import (
 	"crypto/tls"
 	"github.com/itimofeev/task2trip/backend/handlers"
+	"github.com/itimofeev/task2trip/util"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
+	interpose "github.com/carbocation/interpose/middleware"
+	"github.com/dre1080/recover"
+
 	"github.com/itimofeev/task2trip/rest/restapi/operations"
-	"github.com/itimofeev/task2trip/rest/restapi/operations/categories"
 	"github.com/itimofeev/task2trip/rest/restapi/operations/offers"
 	"github.com/itimofeev/task2trip/rest/restapi/operations/tasks"
 )
@@ -50,12 +53,9 @@ func configureAPI(api *operations.Task2TripAPI) http.Handler {
 
 	api.MiscAboutHandler = handlers.AboutHandler
 
-	api.TasksCreateTaskHandler = tasks.CreateTaskHandlerFunc(func(params tasks.CreateTaskParams, principal interface{}) middleware.Responder {
-		return middleware.NotImplemented("operation tasks.CreateTask has not yet been implemented")
-	})
-	api.CategoriesListCategoriesHandler = categories.ListCategoriesHandlerFunc(func(params categories.ListCategoriesParams) middleware.Responder {
-		return middleware.NotImplemented("operation categories.ListCategories has not yet been implemented")
-	})
+	api.TasksCreateTaskHandler = handlers.TasksCreateTaskHandler
+
+	api.CategoriesListCategoriesHandler = handlers.CategoriesListCategoriesHandler
 	api.OffersListOffersHandler = offers.ListOffersHandlerFunc(func(params offers.ListOffersParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation offers.ListOffers has not yet been implemented")
 	})
@@ -93,5 +93,15 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return handler
+	handlePanic := recover.New(&recover.Options{
+		Log: util.Log.Debug,
+	})
+
+	logViaLogrus := interpose.NegroniLogrus()
+
+	return handlePanic(
+		logViaLogrus(
+			handler,
+		),
+	)
 }

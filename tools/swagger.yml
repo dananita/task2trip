@@ -71,7 +71,9 @@ paths:
             $ref: '#/definitions/TaskCreateParams'
       responses:
         201:
-          $ref: '#/definitions/Task'
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Task'
         400:
           description: invalid input, object invalid
 
@@ -110,6 +112,8 @@ paths:
       summary: get list of categories
       operationId: listCategories
       produces:
+        - application/json
+      consumes:
         - application/json
       responses:
         200:
@@ -217,7 +221,7 @@ definitions:
       description:
         type: string
         description: more detailed description of the task
-      category_id:
+      categoryId:
         type: string
       budgetEstimate:
         type: integer
@@ -225,7 +229,7 @@ definitions:
         example: 100
     required:
       - name
-      - category_id
+      - categoryId
       - description
       - budgetEstimate
 
@@ -256,14 +260,13 @@ definitions:
       - id
       - name
       - category
-      - createDate
     properties:
       id:
         type: string
       name:
         type: string
         example: Buy a vodka
-      createDate:
+      createTime:
         type: string
         format: date-time
       category:
@@ -271,14 +274,16 @@ definitions:
 
   Category:
     required:
-      - name
+      - key
       - id
     properties:
       id:
         type: string
-      name:
+      key:
         type: string
-        example: Guides
+        example: names.category.name.guide
+      defaultValue:
+        type: string
 
   User:
     required:
