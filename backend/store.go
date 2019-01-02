@@ -2,6 +2,7 @@ package backend
 
 import (
 	"github.com/itimofeev/task2trip/rest/models"
+	"github.com/itimofeev/task2trip/rest/restapi/operations/offers"
 	"github.com/itimofeev/task2trip/rest/restapi/operations/tasks"
 	"time"
 )
@@ -20,13 +21,24 @@ type Category struct {
 
 type Task struct {
 	ID             string
-	UserID         string
+	UserID         string `sql:",notnull"`
 	Name           string `sql:",notnull"`
 	Description    string `sql:",notnull"`
 	CategoryID     string `sql:",notnull"`
 	Category       *Category
 	CreateTime     time.Time `sql:",notnull"`
 	BudgetEstimate int64     `sql:",notnull"`
+}
+
+type Offer struct {
+	ID         string
+	TaskID     string `sql:",notnull"`
+	Task       *Task
+	UserID     string `sql:",notnull"`
+	User       *User
+	Comment    string
+	Price      int64     `sql:",notnull"`
+	CreateTime time.Time `sql:",notnull"`
 }
 
 type Store interface {
@@ -36,4 +48,6 @@ type Store interface {
 	CreateTask(user *User, params *models.TaskCreateParams) (task *Task, err error)
 	ListCategories() (categories []*Category, err error)
 	SearchTasks(user *User, params tasks.SearchTasksParams) (tasks []*Task, total int64, err error)
+	CreateOffer(user *User, taskId string, params offers.CreateOfferBody) (offer *Offer, err error)
+	ListOffers(user *User, taskId string) (offers []*Offer, err error)
 }

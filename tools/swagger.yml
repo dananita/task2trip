@@ -82,28 +82,60 @@ paths:
           description: invalid input, object invalid
 
   /task/{taskId}/offer:
-    get:
+    put:
       tags:
         - offers
       security:
         - AuthToken: []
-      summary: get offers for task
-      operationId: listOffers
+      summary: create offer
+      description: user can't create offer for his own task. Also single user can't create multiple offers for single task
+      operationId: createOffer
       parameters:
         - in: path
           name: taskId
           type: string
           required: true
         - in: body
-          name: task
-          description: Task item to add
+          name: offer
+          description: offer to create
           schema:
-            $ref: '#/definitions/OfferCreateParams'
+            type: object
+            properties:
+              comment:
+                type: string
+              price:
+                type: integer
+            required:
+              - price
       produces:
+        - application/json
+      consumes:
         - application/json
       responses:
         200:
-          description: list of categories
+          description: created offer
+          schema:
+            $ref: '#/definitions/Offer'
+    get:
+      tags:
+        - offers
+      security:
+        - AuthToken: []
+      summary: get offers for task
+      description: returns list of offers for task. For task owner will be returned all offers for tasks, for others only their own offer for this task if any
+      operationId: listTaskOffers
+      parameters:
+        - in: path
+          name: taskId
+          type: string
+          required: true
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        200:
+          description: list of offers
           schema:
             type: array
             items:
@@ -237,16 +269,6 @@ definitions:
       - description
       - budgetEstimate
 
-  OfferCreateParams:
-    type: object
-    properties:
-      comment:
-        type: string
-      price:
-        type: integer
-    required:
-      - price
-
   UserCreateParams:
     type: object
     properties:
@@ -315,14 +337,18 @@ definitions:
 
   Offer:
     required:
-      - name
+      - price
+      - user
       - id
     properties:
       id:
         type: string
-      name:
+      comment:
         type: string
-        example: Ivan Petrov
+      price:
+        type: integer
+      user:
+        $ref: '#/definitions/User'
 
 host: "somehost.ru"
 schemes:

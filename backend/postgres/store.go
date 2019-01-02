@@ -5,6 +5,7 @@ import (
 	"github.com/go-pg/pg/orm"
 	"github.com/itimofeev/task2trip/backend"
 	"github.com/itimofeev/task2trip/rest/models"
+	"github.com/itimofeev/task2trip/rest/restapi/operations/offers"
 	"github.com/itimofeev/task2trip/rest/restapi/operations/tasks"
 	"github.com/itimofeev/task2trip/util"
 	"github.com/rs/xid"
@@ -30,7 +31,7 @@ func NewStore(connectURL string) backend.Store {
 	}
 
 	//db.Exec(`ALTER TABLE shares ADD CONSTRAINT shares_unique UNIQUE (user_id, basket_id)`)
-	//db.Exec(`ALTER TABLE goods ADD CONSTRAINT goods_unique UNIQUE (user_id, basket_id, goods_id)`)
+	_, _ = db.Exec(`ALTER TABLE offers ADD CONSTRAINT offer__user_task__unique UNIQUE (user_id, task_id)`)
 	//db.Exec(`CREATE INDEX tbl_col_text_pattern_ops_idx ON products(name text_pattern_ops)`)
 	//
 	_, _ = store.CreateUser("user1@gmail.com", "123")
@@ -43,6 +44,51 @@ func NewStore(connectURL string) backend.Store {
 
 type Store struct {
 	db *pg.DB
+}
+
+func (s *Store) ListOffers(user *backend.User, taskId string) (offers []*backend.Offer, err error) {
+	err = s.db.RunInTransaction(func(tx *pg.Tx) error {
+		task := &backend.Task{ID: taskId}
+		if err := tx.Select(task); err != nil {
+			return err
+		}
+
+		query := tx.Model(&offers).Where("task_id = ?", taskId)
+
+		if task.UserID != user.ID {
+			query = query.Where("user_id = ?", user.ID)
+		}
+
+		return query.Relation("User").Select()
+	})
+
+	return offers, err
+}
+
+func (s *Store) CreateOffer(user *backend.User, taskId string, params offers.CreateOfferBody) (offer *backend.Offer, err error) {
+	err = s.db.RunInTransaction(func(tx *pg.Tx) error {
+		task := &backend.Task{ID: taskId}
+		if err := tx.Select(task); err != nil {
+			return err
+		}
+
+		if task.UserID == user.ID {
+			return util.NewBadRequestError("errors.offer.unable.create.offer.for.self.task", "unable to create offer for user's self task")
+		}
+
+		offer = &backend.Offer{
+			ID:         xid.New().String(),
+			UserID:     user.ID,
+			CreateTime: time.Now(),
+			User:       user,
+			Comment:    params.Comment,
+			Price:      *params.Price,
+			TaskID:     task.ID,
+		}
+		return tx.Insert(offer)
+	})
+
+	return offer, err
 }
 
 func (s *Store) SearchTasks(user *backend.User, params tasks.SearchTasksParams) (tasks []*backend.Task, total int64, err error) {
@@ -81,31 +127,30 @@ func (s *Store) ListCategories() (categories []*backend.Category, err error) {
 }
 
 func (s *Store) CreateTask(user *backend.User, params *models.TaskCreateParams) (task *backend.Task, err error) {
-	category, err := s.GetCategoryByID(*params.CategoryID)
-	if err != nil {
-		return nil, err
-	}
-	task = &backend.Task{
-		ID:             xid.New().String(),
-		UserID:         user.ID,
-		CreateTime:     time.Now(),
-		Name:           *params.Name,
-		Description:    *params.Description,
-		CategoryID:     category.ID,
-		Category:       category,
-		BudgetEstimate: *params.BudgetEstimate,
-	}
-	return task, s.db.Insert(task)
+	err = s.db.RunInTransaction(func(tx *pg.Tx) error {
+		category := &backend.Category{ID: *params.CategoryID}
+		if err := tx.Select(category); err != nil {
+			return err
+		}
+
+		task = &backend.Task{
+			ID:             xid.New().String(),
+			UserID:         user.ID,
+			CreateTime:     time.Now(),
+			Name:           *params.Name,
+			Description:    *params.Description,
+			CategoryID:     category.ID,
+			Category:       category,
+			BudgetEstimate: *params.BudgetEstimate,
+		}
+		return tx.Insert(task)
+	})
+	return task, err
 }
 
 func (s *Store) GetUserByEmailAndPassword(email, password string) (user *backend.User, err error) {
 	user = &backend.User{}
 	return user, s.db.Model(user).Where("email = ? AND password = ?", email, password).Select()
-}
-
-func (s *Store) GetCategoryByID(id string) (category *backend.Category, err error) {
-	category = &backend.Category{ID: id}
-	return category, s.db.Select(category)
 }
 
 func (s *Store) GetUserByID(id string) (*backend.User, error) {
@@ -136,6 +181,7 @@ func createSchema(db *pg.DB) error {
 		(*backend.User)(nil),
 		(*backend.Category)(nil),
 		(*backend.Task)(nil),
+		(*backend.Offer)(nil),
 	} {
 		err := db.CreateTable(mdl, &orm.CreateTableOptions{
 			IfNotExists: true,

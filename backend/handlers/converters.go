@@ -52,3 +52,19 @@ func convertCategory(category *backend.Category) *models.Category {
 		DefaultValue: category.DefaultValue,
 	}
 }
+
+func convertOffer(offer *backend.Offer) *models.Offer {
+	return &models.Offer{
+		ID:      &offer.ID,
+		Price:   &offer.Price,
+		Comment: offer.Comment,
+		User:    convertUser(offer.User),
+	}
+}
+
+func convertOffers(offers_ []*backend.Offer) (res []*models.Offer) {
+	for _, offer := range offers_ {
+		res = append(res, convertOffer(offer))
+	}
+	return res
+}
