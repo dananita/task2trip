@@ -34,7 +34,11 @@ var AuthFunc = func(token string) (interface{}, error) {
 }
 
 var UserSignupHandlerFunc = users.UserSignupHandlerFunc(func(params users.UserSignupParams) middleware.Responder {
-	return middleware.NotImplemented("operation users.UserLogin has not yet been implemented")
+	user, err := store.CreateUser(*params.User.Email, *params.User.Password)
+	if err != nil {
+		return util.ConvertHTTPErrorToResponse(err)
+	}
+	return users.NewUserSignupOK().WithPayload(convertUser(user))
 })
 
 var AboutHandler = misc.AboutHandlerFunc(func(params misc.AboutParams) middleware.Responder {

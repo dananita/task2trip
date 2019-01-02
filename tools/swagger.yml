@@ -160,9 +160,11 @@ paths:
       operationId: userSignup
       produces:
         - application/json
+      consumes:
+        - application/json
       parameters:
         - in: body
-          name: task
+          name: user
           schema:
             $ref: '#/definitions/UserCreateParams'
       responses:

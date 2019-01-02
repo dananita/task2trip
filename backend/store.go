@@ -9,4 +9,5 @@ type User struct {
 type Store interface {
 	GetUserByID(token string) (*User, error)
 	GetUserByEmailAndPassword(email, password string) (user *User, err error)
+	CreateUser(email, password string) (user *User, err error)
 }
