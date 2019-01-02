@@ -7,9 +7,9 @@ import (
 	"github.com/itimofeev/task2trip/backend/handlers"
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
-	runtime "github.com/go-openapi/runtime"
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/runtime/middleware"
 
 	"github.com/itimofeev/task2trip/rest/restapi/operations"
 	"github.com/itimofeev/task2trip/rest/restapi/operations/categories"
@@ -39,15 +39,18 @@ func configureAPI(api *operations.Task2TripAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Applies when the "X-Auth-Token" header is set
-	api.AuthTokenAuth = func(token string) (interface{}, error) {
-		return nil, errors.NotImplemented("api key auth (AuthToken) X-Auth-Token from header param [X-Auth-Token] has not yet been implemented")
-	}
+	api.AuthTokenAuth = handlers.AuthFunc
+
+	handlers.Init()
 
 	// Set your custom authorizer if needed. Default one is security.Authorized()
 	// Expected interface runtime.Authorizer
 	//
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
+
+	api.MiscAboutHandler = handlers.AboutHandler
+
 	api.TasksCreateTaskHandler = tasks.CreateTaskHandlerFunc(func(params tasks.CreateTaskParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation tasks.CreateTask has not yet been implemented")
 	})

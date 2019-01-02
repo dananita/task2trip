@@ -135,6 +135,7 @@ paths:
             properties:
               authToken:
                 type: string
+
   /user:
     post:
       tags:
@@ -150,9 +151,36 @@ paths:
             $ref: '#/definitions/UserCreateParams'
       responses:
         200:
-          description: list of categories
+          description: user
           schema:
             $ref: '#/definitions/User'
+
+    get:
+      tags:
+        - users
+      summary: get current user
+      operationId: currentUser
+      produces:
+        - application/json
+      responses:
+        200:
+          description: user
+          schema:
+            $ref: '#/definitions/User'
+
+  /about:
+    get:
+      tags:
+        - misc
+      summary: hello
+      operationId: about
+      produces:
+        - application/json
+      responses:
+        200:
+          description: hello
+          schema:
+            type: string
 
 securityDefinitions:
   AuthToken:
