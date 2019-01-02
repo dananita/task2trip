@@ -264,6 +264,7 @@ definitions:
       - id
       - name
       - category
+      - budgetEstimate
     properties:
       id:
         type: string
@@ -273,6 +274,8 @@ definitions:
       createTime:
         type: string
         format: date-time
+      budgetEstimate:
+        type: integer
       category:
         $ref: '#/definitions/Category'
 

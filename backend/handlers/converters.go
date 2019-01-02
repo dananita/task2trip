@@ -37,10 +37,11 @@ func convertCategories(categs []*backend.Category) (res []*models.Category) {
 
 func convertTask(task *backend.Task) *models.Task {
 	return &models.Task{
-		ID:         &task.ID,
-		Name:       &task.Name,
-		Category:   convertCategory(task.Category),
-		CreateTime: strfmt.DateTime(task.CreateTime),
+		ID:             &task.ID,
+		Name:           &task.Name,
+		Category:       convertCategory(task.Category),
+		CreateTime:     strfmt.DateTime(task.CreateTime),
+		BudgetEstimate: &task.BudgetEstimate,
 	}
 }
 

@@ -86,13 +86,14 @@ func (s *Store) CreateTask(user *backend.User, params *models.TaskCreateParams) 
 		return nil, err
 	}
 	task = &backend.Task{
-		ID:          xid.New().String(),
-		UserID:      user.ID,
-		CreateTime:  time.Now(),
-		Name:        *params.Name,
-		Description: *params.Description,
-		CategoryID:  category.ID,
-		Category:    category,
+		ID:             xid.New().String(),
+		UserID:         user.ID,
+		CreateTime:     time.Now(),
+		Name:           *params.Name,
+		Description:    *params.Description,
+		CategoryID:     category.ID,
+		Category:       category,
+		BudgetEstimate: *params.BudgetEstimate,
 	}
 	return task, s.db.Insert(task)
 }

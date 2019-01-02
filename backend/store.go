@@ -19,13 +19,14 @@ type Category struct {
 }
 
 type Task struct {
-	ID          string
-	UserID      string
-	Name        string `sql:",notnull"`
-	Description string `sql:",notnull"`
-	CategoryID  string `sql:",notnull"`
-	Category    *Category
-	CreateTime  time.Time `sql:",notnull"`
+	ID             string
+	UserID         string
+	Name           string `sql:",notnull"`
+	Description    string `sql:",notnull"`
+	CategoryID     string `sql:",notnull"`
+	Category       *Category
+	CreateTime     time.Time `sql:",notnull"`
+	BudgetEstimate int64     `sql:",notnull"`
 }
 
 type Store interface {
