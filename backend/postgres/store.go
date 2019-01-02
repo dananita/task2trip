@@ -5,6 +5,7 @@ import (
 	"github.com/go-pg/pg/orm"
 	"github.com/itimofeev/task2trip/backend"
 	"github.com/itimofeev/task2trip/util"
+	"github.com/rs/xid"
 	"time"
 )
 
@@ -30,7 +31,7 @@ func NewStore(connectURL string) backend.Store {
 	//db.Exec(`ALTER TABLE goods ADD CONSTRAINT goods_unique UNIQUE (user_id, basket_id, goods_id)`)
 	//db.Exec(`CREATE INDEX tbl_col_text_pattern_ops_idx ON products(name text_pattern_ops)`)
 	//
-	//store.CreateUser("user1@gmail.com", "123")
+	_, _ = store.CreateUser("user1@gmail.com", "123")
 	//store.CreateUser("user2@gmail.com", "123")
 
 	return store
@@ -40,10 +41,24 @@ type Store struct {
 	db *pg.DB
 }
 
+func (s *Store) GetUserByEmailAndPassword(email, password string) (user *backend.User, err error) {
+	user = &backend.User{}
+	return user, s.db.Model(user).Where("email = ? AND password = ?", email, password).Select()
+}
+
 func (s *Store) GetUserByID(id string) (*backend.User, error) {
 	user := &backend.User{ID: id}
 	err := s.db.Select(user)
 	return user, err
+}
+
+func (s *Store) CreateUser(email, password string) (*backend.User, error) {
+	user := &backend.User{
+		ID:       xid.New().String(),
+		Email:    email,
+		Password: password,
+	}
+	return user, s.db.Insert(user)
 }
 
 func createSchema(db *pg.DB) error {
