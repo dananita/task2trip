@@ -18,8 +18,15 @@ var TasksCreateTaskHandler = tasks.CreateTaskHandlerFunc(func(params tasks.Creat
 	return tasks.NewCreateTaskCreated().WithPayload(convertTask(task))
 })
 
-var TasksSearchTasksHandler = tasks.SearchTasksHandlerFunc(func(params tasks.SearchTasksParams, principal interface{}) middleware.Responder {
-	user := principal.(*backend.User)
+var TasksSearchTasksHandler = tasks.SearchTasksHandlerFunc(func(params tasks.SearchTasksParams) middleware.Responder {
+	var user *backend.User
+	if params.Authorization != nil {
+		principal, err := AuthFunc(*params.Authorization)
+		if err == nil {
+			user = principal.(*backend.User)
+		}
+	}
+
 	tasks_, total, err := store.SearchTasks(user, params)
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)

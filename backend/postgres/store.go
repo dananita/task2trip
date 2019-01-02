@@ -46,8 +46,10 @@ type Store struct {
 }
 
 func (s *Store) SearchTasks(user *backend.User, params tasks.SearchTasksParams) (tasks []*backend.Task, total int64, err error) {
-	query := s.db.Model(&tasks).
-		Where("user_id = ?", user.ID)
+	query := s.db.Model(&tasks)
+	if params.UserID != nil && user != nil && user.ID == *params.UserID {
+		query = query.Where("user_id = ?", user.ID)
+	}
 
 	if params.CategoryID != nil {
 		query = query.Where("category_id = ?", *params.CategoryID)

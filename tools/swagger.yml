@@ -11,8 +11,6 @@ paths:
     get:
       tags:
         - tasks
-      security:
-        - AuthToken: []
       summary: search for tasks according to filters
       operationId: searchTasks
       description: |
@@ -21,9 +19,17 @@ paths:
       produces:
         - application/json
       parameters:
+        - in: header
+          name: Authorization
+          description: auth token
+          type: string
         - in: query
           name: searchString
           description: pass an optional search string for looking up tasks
+          required: false
+          type: string
+        - in: query
+          name: userId
           required: false
           type: string
         - in: query
