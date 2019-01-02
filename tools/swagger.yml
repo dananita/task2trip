@@ -40,14 +40,12 @@ paths:
           description: maximum number of records to return
           type: integer
           minimum: 0
-          maximum: 50
+          maximum: 100
       responses:
         200:
           description: search results matching criteria
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Task'
+            $ref: '#/definitions/TaskPage'
         400:
           description: bad input parameter
 
@@ -271,6 +269,16 @@ definitions:
         format: date-time
       category:
         $ref: '#/definitions/Category'
+
+  TaskPage:
+    type: object
+    properties:
+      payload:
+        type: array
+        items:
+          $ref: '#/definitions/Task'
+      total:
+        type: integer
 
   Category:
     required:

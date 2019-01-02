@@ -5,6 +5,7 @@ import (
 	"github.com/go-pg/pg/orm"
 	"github.com/itimofeev/task2trip/backend"
 	"github.com/itimofeev/task2trip/rest/models"
+	"github.com/itimofeev/task2trip/rest/restapi/operations/tasks"
 	"github.com/itimofeev/task2trip/util"
 	"github.com/rs/xid"
 	"time"
@@ -44,6 +45,35 @@ type Store struct {
 	db *pg.DB
 }
 
+func (s *Store) SearchTasks(user *backend.User, params tasks.SearchTasksParams) (tasks []*backend.Task, total int64, err error) {
+	query := s.db.Model(&tasks).
+		Where("user_id = ?", user.ID)
+
+	if params.CategoryID != nil {
+		query = query.Where("category_id = ?", *params.CategoryID)
+	}
+
+	if params.SearchString != nil {
+		query = query.Where("name ilike ?", "%"+*params.SearchString+"%")
+	}
+
+	limit := 100
+	if params.Limit != nil && *params.Limit > 0 && *params.Limit < 100 {
+		limit = 100
+	}
+
+	skip := 0
+	if params.Skip != nil && *params.Skip > 0 {
+		skip = int(*params.Skip)
+	}
+
+	total_, err := query.
+		Limit(limit).
+		Offset(skip).
+		Relation("Category").SelectAndCount()
+	return tasks, int64(total_), err
+}
+
 func (s *Store) ListCategories() (categories []*backend.Category, err error) {
 	return categories, s.db.Model(&categories).Select()
 }
@@ -55,6 +85,7 @@ func (s *Store) CreateTask(user *backend.User, params *models.TaskCreateParams) 
 	}
 	task = &backend.Task{
 		ID:          xid.New().String(),
+		UserID:      user.ID,
 		CreateTime:  time.Now(),
 		Name:        *params.Name,
 		Description: *params.Description,

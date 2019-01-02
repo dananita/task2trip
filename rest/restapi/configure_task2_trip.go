@@ -17,7 +17,6 @@ import (
 
 	"github.com/itimofeev/task2trip/rest/restapi/operations"
 	"github.com/itimofeev/task2trip/rest/restapi/operations/offers"
-	"github.com/itimofeev/task2trip/rest/restapi/operations/tasks"
 )
 
 //go:generate swagger generate server --target ../rest --name Task2Trip --spec ../tools/swagger.yml
@@ -59,10 +58,8 @@ func configureAPI(api *operations.Task2TripAPI) http.Handler {
 	api.OffersListOffersHandler = offers.ListOffersHandlerFunc(func(params offers.ListOffersParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation offers.ListOffers has not yet been implemented")
 	})
-	api.TasksSearchTasksHandler = tasks.SearchTasksHandlerFunc(func(params tasks.SearchTasksParams, principal interface{}) middleware.Responder {
-		return middleware.NotImplemented("operation tasks.SearchTasks has not yet been implemented")
-	})
 
+	api.TasksSearchTasksHandler = handlers.TasksSearchTasksHandler
 	api.UsersUserLoginHandler = handlers.UsersUserLoginHandler
 	api.UsersUserSignupHandler = handlers.UserSignupHandlerFunc
 	api.UsersCurrentUserHandler = handlers.UsersCurrentUserHandler

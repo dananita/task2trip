@@ -2,6 +2,7 @@ package backend
 
 import (
 	"github.com/itimofeev/task2trip/rest/models"
+	"github.com/itimofeev/task2trip/rest/restapi/operations/tasks"
 	"time"
 )
 
@@ -19,6 +20,7 @@ type Category struct {
 
 type Task struct {
 	ID          string
+	UserID      string
 	Name        string `sql:",notnull"`
 	Description string `sql:",notnull"`
 	CategoryID  string `sql:",notnull"`
@@ -32,4 +34,5 @@ type Store interface {
 	CreateUser(email, password string) (user *User, err error)
 	CreateTask(user *User, params *models.TaskCreateParams) (task *Task, err error)
 	ListCategories() (categories []*Category, err error)
+	SearchTasks(user *User, params tasks.SearchTasksParams) (tasks []*Task, total int64, err error)
 }
