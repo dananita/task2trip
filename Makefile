@@ -50,9 +50,9 @@ rm-containers:
 release: build-docker build-image upload clean run-remote
 
 upload:
+	ssh root@159.69.121.222 "cd $(REPO_NAME); mkdir -p tools"
 	scp -r $(REPO_NAME).img root@159.69.121.222:/root/$(REPO_NAME)
 	scp -r tools/docker-stack.yml root@159.69.121.222:/root/$(REPO_NAME)/tools
-	scp -r tools/cmd.sql root@159.69.121.222:/root/$(REPO_NAME)/tools
 	scp -r Makefile root@159.69.121.222:/root/$(REPO_NAME)
 	ssh root@159.69.121.222 "cd $(REPO_NAME); ls"
 
@@ -80,10 +80,6 @@ build-image:
 		-t $(REPO_NAME) \
 		-f tools/Dockerfile `pwd`
 	docker image save $(REPO_NAME) -o $(REPO_NAME).img
-
-import-products:
-	docker cp tools/cmd.sql `docker ps -q -f name=db_db`:/cmd.sql \
-		&& docker exec `docker ps -q -f name=db_db` psql postgres postgres -f /cmd.sql
 
 build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o $$GOPATH/bin/linux_amd64/task2trip $(REPO_PATH)/rest/cmd/task2-trip-server
