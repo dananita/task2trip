@@ -7,13 +7,18 @@ import (
 	"github.com/itimofeev/task2trip/rest/restapi/operations/misc"
 	"github.com/itimofeev/task2trip/rest/restapi/operations/users"
 	"github.com/itimofeev/task2trip/util"
+	"os"
 	"strings"
 )
 
 var store backend.Store
 
 func Init() {
-	store = postgres.NewStore("postgresql://postgres@db:5432/postgres?sslmode=disable")
+	dbAddr := os.Getenv("DB_ADDR")
+	if len(dbAddr) == 0 {
+		dbAddr = "postgresql://postgres@db:5432/postgres?sslmode=disable"
+	}
+	store = postgres.NewStore(dbAddr)
 }
 
 var AuthFunc = func(token string) (interface{}, error) {

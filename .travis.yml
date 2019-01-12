@@ -1,0 +1,23 @@
+language: go
+
+go:
+  - 1.11.x
+
+services:
+  - postgresql
+
+env:
+  - DB_ADDR=postgresql://postgres@localhost:5432/travis_ci_test?sslmode=disable
+
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+
+before_install:
+  - go get github.com/itimofeev/task2trip
+  - go get github.com/tools/godep
+
+install:
+  - godep restore
+
+script:
+  - go test -v ./...
