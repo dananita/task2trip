@@ -1,7 +1,10 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/go-openapi/loads"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	client2 "github.com/itimofeev/task2trip/rest/client"
 	"github.com/itimofeev/task2trip/rest/client/users"
 	"github.com/itimofeev/task2trip/rest/models"
@@ -32,7 +35,15 @@ func Init() *client2.Task2Trip {
 	return client2.New(c, nil)
 }
 
-func TestName(t *testing.T) {
+type TokenAuth struct {
+	AuthToken string
+}
+
+func (a *TokenAuth) AuthenticateRequest(r runtime.ClientRequest, _ strfmt.Registry) error {
+	return r.SetHeaderParam("Authorization", fmt.Sprintf("Bearer %s", a.AuthToken))
+}
+
+func Test_User_SignUP(t *testing.T) {
 	task2trip := Init()
 
 	email := util.RandEmail()
@@ -41,4 +52,11 @@ func TestName(t *testing.T) {
 	signUpOk, err := task2trip.Users.UserSignup(users.NewUserSignupParams().WithUser(&models.UserCreateParams{Email: &email, Password: &pass}))
 	require.NoError(t, err)
 	require.Equal(t, email, *signUpOk.Payload.Name)
+
+	loginOk, err := task2trip.Users.UserLogin(users.NewUserLoginParams().WithCredentials(users.UserLoginBody{Email: &email, Password: &pass}))
+	require.NoError(t, err)
+
+	currentUserOk, err := task2trip.Users.CurrentUser(users.NewCurrentUserParams(), &TokenAuth{AuthToken: loginOk.Payload.AuthToken})
+	require.NoError(t, err)
+	require.Equal(t, email, *currentUserOk.Payload.Name)
 }

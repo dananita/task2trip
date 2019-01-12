@@ -1,6 +1,7 @@
 swagger: '2.0'
 info:
-  description: API for task2trip
+  description: | 
+    API for task2trip. For some methods (for example create task) you need athurization. For auhtorization of your request in server you need to add header Authorization: Bearer <authToken>
   version: 1.0.0
   title: Task2Trip API
   contact:
@@ -14,8 +15,8 @@ paths:
       summary: search for tasks according to filters
       operationId: searchTasks
       description: |
-        By passing in the appropriate options, you can search for
-        available tasks in the system
+        By passing in the appropriate options, you can search for available tasks.
+        Unauthorized user can only view all tasks. For authorized user you can specify userId and get only tasks created by user with id=userId
       produces:
         - application/json
       parameters:

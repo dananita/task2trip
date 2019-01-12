@@ -1,6 +1,13 @@
 package util
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 // RandString simply generates random string of length n
 func RandString(n int) string {
