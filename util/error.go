@@ -2,7 +2,6 @@ package util
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/itimofeev/auchan/util"
 	"net/http"
 	"runtime/debug"
 	"strings"
@@ -75,7 +74,7 @@ func NewServerError(key, description string) *HTTPError {
 }
 
 func ConvertHTTPErrorToResponse(err error) middleware.Responder {
-	util.Log.Error(err)
+	Log.Error(err)
 	if httpError, ok := err.(*HTTPError); ok {
 		return httpError
 	}
