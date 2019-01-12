@@ -7,8 +7,7 @@ services:
   - postgresql
 
 env:
-  - DB_ADDR=postgresql://postgres@localhost:5432/travis_ci_test?sslmode=disable
-  - CODECOV_TOKEN="e2c72939-f5b1-4ff4-ac4b-72ece616a5be"
+  - DB_ADDR=postgresql://postgres@localhost:5432/travis_ci_test?sslmode=disable CODECOV_TOKEN="e2c72939-f5b1-4ff4-ac4b-72ece616a5be"
 
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
