@@ -16,14 +16,35 @@
 			"Rev": "bbf7a2afc14f93e1e0a5c06df524fbd75e5031e5"
 		},
 		{
-			"ImportPath": "github.com/sirupsen/logrus",
-			"Comment": "v0.11.5-46-g5e5dc89",
-			"Rev": "5e5dc898656f695e2a086b8e12559febbfc01562"
-		},
-		{
 			"ImportPath": "github.com/asaskevich/govalidator",
 			"Comment": "v9-26-gf9ffefc",
 			"Rev": "f9ffefc3facfbe0caee3fea233cbb6e8208f4541"
+		},
+		{
+			"ImportPath": "github.com/carbocation/handlers",
+			"Rev": "c939c6d9ef31c3d483da9db462b6fd806044ac87"
+		},
+		{
+			"ImportPath": "github.com/carbocation/interpose/adaptors",
+			"Rev": "723534742ba3bbda66268b735aaa41634468acc6"
+		},
+		{
+			"ImportPath": "github.com/carbocation/interpose/middleware",
+			"Rev": "723534742ba3bbda66268b735aaa41634468acc6"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/inject",
+			"Comment": "v1.0-rc1-10-g33e0aa1",
+			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
+		},
+		{
+			"ImportPath": "github.com/davecgh/go-spew/spew",
+			"Rev": "5215b55f46b2b919f50a1df0eaa5886afe4e3b3d"
+		},
+		{
+			"ImportPath": "github.com/dgrijalva/jwt-go",
+			"Comment": "v3.0.0-4-g01aeca5",
+			"Rev": "01aeca54ebda6e0fbfafd0a524d234159c05ec20"
 		},
 		{
 			"ImportPath": "github.com/docker/go-units",
@@ -31,8 +52,26 @@
 			"Rev": "0dadbb0345b35ec7ef35e228dabb8de89a65bf52"
 		},
 		{
+			"ImportPath": "github.com/dre1080/recover",
+			"Rev": "1c296bbb3227134aca59bf2e3dc4c0893eee62fa"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/stack",
+			"Rev": "751773369052141c013c6e827a71e8f35c07879c"
+		},
+		{
+			"ImportPath": "github.com/fatih/color",
+			"Comment": "v1.7.0-5-g3f9d52f",
+			"Rev": "3f9d52f7176a6927daacff70a3e8d1dc2025c53e"
+		},
+		{
 			"ImportPath": "github.com/go-errors/errors",
 			"Rev": "a41850380601eeb43f4350f7d17c6bbd8944aaf8"
+		},
+		{
+			"ImportPath": "github.com/go-martini/martini",
+			"Comment": "v1.0-188-g22fa469",
+			"Rev": "22fa46961aabd2665cf3f1343b146d20028f5071"
 		},
 		{
 			"ImportPath": "github.com/go-openapi/analysis",
@@ -160,6 +199,10 @@
 			"Rev": "26605f161ceb8f0531c1955a9270c034cf78a725"
 		},
 		{
+			"ImportPath": "github.com/goods/httpbuf",
+			"Rev": "5709e9bb814c932e48b6737e1cf214a6522453a2"
+		},
+		{
 			"ImportPath": "github.com/jessevdk/go-flags",
 			"Comment": "v1.4.0-3-g1c38ed7",
 			"Rev": "1c38ed7ad0cc3d9e66649ac398c30e45f395c4eb"
@@ -167,6 +210,10 @@
 		{
 			"ImportPath": "github.com/jinzhu/inflection",
 			"Rev": "04140366298a54a039076d798123ffa108fff46c"
+		},
+		{
+			"ImportPath": "github.com/justinas/nosurf",
+			"Rev": "3af30e51c05b8f9a64e8bd2d7e088d80d743d75d"
 		},
 		{
 			"ImportPath": "github.com/mailru/easyjson/buffer",
@@ -181,8 +228,55 @@
 			"Rev": "60711f1a8329503b04e1c88535f419d0bb440bff"
 		},
 		{
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Comment": "v0.0.5",
+			"Rev": "9056b7a9f2d1f2d96498d6d146acd1f9d5ed3d59"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Rev": "56b76bdf51f7708750eac80fa38b952bb9f32639"
+		},
+		{
+			"ImportPath": "github.com/meatballhat/negroni-logrus",
+			"Rev": "31067281800f66f57548a7a32d9c6c5f963fef83"
+		},
+		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
 			"Rev": "f15292f7a699fcc1a38a80977f80a046874ba8ac"
+		},
+		{
+			"ImportPath": "github.com/phyber/negroni-gzip/gzip",
+			"Rev": "ef6356a5d02936b65ca8e60b604ed6b078aac8d3"
+		},
+		{
+			"ImportPath": "github.com/pmezard/go-difflib/difflib",
+			"Comment": "v1.0.0",
+			"Rev": "792786c7400a136282c1664665ae0a8db921c6c2"
+		},
+		{
+			"ImportPath": "github.com/rs/xid",
+			"Comment": "v1.1",
+			"Rev": "02dd45c33376f85d1064355dc790dcc4850596b1"
+		},
+		{
+			"ImportPath": "github.com/sirupsen/logrus",
+			"Comment": "v0.11.5-46-g5e5dc89",
+			"Rev": "5e5dc898656f695e2a086b8e12559febbfc01562"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Comment": "v1.1.4-71-g890a5c3",
+			"Rev": "890a5c3458b43e6104ff5da8dfa139d013d77544"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/require",
+			"Comment": "v1.1.4-71-g890a5c3",
+			"Rev": "890a5c3458b43e6104ff5da8dfa139d013d77544"
+		},
+		{
+			"ImportPath": "github.com/urfave/negroni",
+			"Comment": "v0.2.0-115-g1d8981a",
+			"Rev": "1d8981a52d6bda4467a9faacf3fdddd38222dfc4"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/pbkdf2",

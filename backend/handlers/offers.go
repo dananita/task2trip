@@ -13,7 +13,7 @@ var OffersListTaskOffersHandler = offers.ListTaskOffersHandlerFunc(func(params o
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)
 	}
-	return offers.NewListOffersOK().WithPayload(convertOffers(offers_))
+	return offers.NewListTaskOffersOK().WithPayload(convertOffers(offers_))
 })
 
 var OffersCreateOfferHandler = offers.CreateOfferHandlerFunc(func(params offers.CreateOfferParams, principal interface{}) middleware.Responder {
