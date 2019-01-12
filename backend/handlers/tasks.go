@@ -10,7 +10,7 @@ import (
 
 var TasksCreateTaskHandler = tasks.CreateTaskHandlerFunc(func(params tasks.CreateTaskParams, principal interface{}) middleware.Responder {
 	user := principal.(*backend.User)
-	task, err := store.CreateTask(user, params.Task)
+	task, err := Store.CreateTask(user, params.Task)
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)
 	}
@@ -27,7 +27,7 @@ var TasksSearchTasksHandler = tasks.SearchTasksHandlerFunc(func(params tasks.Sea
 		}
 	}
 
-	tasks_, total, err := store.SearchTasks(user, params)
+	tasks_, total, err := Store.SearchTasks(user, params)
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)
 	}
@@ -35,7 +35,7 @@ var TasksSearchTasksHandler = tasks.SearchTasksHandlerFunc(func(params tasks.Sea
 })
 
 var CategoriesListCategoriesHandler = categories.ListCategoriesHandlerFunc(func(params categories.ListCategoriesParams) middleware.Responder {
-	categories_, err := store.ListCategories()
+	categories_, err := Store.ListCategories()
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)
 	}

@@ -42,6 +42,7 @@ func convertTask(task *backend.Task) *models.Task {
 		Category:       convertCategory(task.Category),
 		CreateTime:     strfmt.DateTime(task.CreateTime),
 		BudgetEstimate: &task.BudgetEstimate,
+		Description:    &task.Description,
 	}
 }
 

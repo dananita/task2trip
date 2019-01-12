@@ -24,3 +24,11 @@ func newJSONFormatter() *logrus.JSONFormatter {
 		TimestampFormat: "2006-01-02T15:04:05.999",
 	}
 }
+
+func PtrFromString(s string) *string {
+	return &s
+}
+
+func PtrFromInt64(s int64) *int64 {
+	return &s
+}

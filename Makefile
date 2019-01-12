@@ -38,6 +38,9 @@ download:
     		--header="Accept: application/yaml" \
     		https://api.swaggerhub.com/apis/itimofeev/task2trip/1.0.0
 
+gen: gen-client gen-server
+regen: download gen
+
 rm:
 	docker service rm $(shell docker service ls -q) || true
 

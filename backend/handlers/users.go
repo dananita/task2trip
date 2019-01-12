@@ -11,14 +11,14 @@ import (
 	"strings"
 )
 
-var store backend.Store
+var Store backend.Store
 
 func Init() {
 	dbAddr := os.Getenv("DB_ADDR")
 	if len(dbAddr) == 0 {
 		dbAddr = "postgresql://postgres@db:5432/postgres?sslmode=disable"
 	}
-	store = postgres.NewStore(dbAddr)
+	Store = postgres.NewStore(dbAddr)
 }
 
 var AuthFunc = func(token string) (interface{}, error) {
@@ -28,7 +28,7 @@ var AuthFunc = func(token string) (interface{}, error) {
 		return nil, err
 	}
 
-	user, err := store.GetUserByID(claims.UserID)
+	user, err := Store.GetUserByID(claims.UserID)
 	if err != nil {
 		e := util.ConvertHTTPErrorToResponse(err)
 		t, _ := e.(error)
@@ -39,7 +39,7 @@ var AuthFunc = func(token string) (interface{}, error) {
 }
 
 var UserSignupHandlerFunc = users.UserSignupHandlerFunc(func(params users.UserSignupParams) middleware.Responder {
-	user, err := store.CreateUser(*params.User.Email, *params.User.Password)
+	user, err := Store.CreateUser(*params.User.Email, *params.User.Password)
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)
 	}
@@ -57,7 +57,7 @@ var UsersCurrentUserHandler = users.CurrentUserHandlerFunc(func(params users.Cur
 })
 
 var UsersUserLoginHandler = users.UserLoginHandlerFunc(func(params users.UserLoginParams) middleware.Responder {
-	user, err := store.GetUserByEmailAndPassword(*params.Credentials.Email, *params.Credentials.Password)
+	user, err := Store.GetUserByEmailAndPassword(*params.Credentials.Email, *params.Credentials.Password)
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)
 	}

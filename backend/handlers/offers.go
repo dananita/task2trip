@@ -9,7 +9,7 @@ import (
 
 var OffersListTaskOffersHandler = offers.ListTaskOffersHandlerFunc(func(params offers.ListTaskOffersParams, principal interface{}) middleware.Responder {
 	user := principal.(*backend.User)
-	offers_, err := store.ListOffers(user, params.TaskID)
+	offers_, err := Store.ListOffers(user, params.TaskID)
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)
 	}
@@ -18,7 +18,7 @@ var OffersListTaskOffersHandler = offers.ListTaskOffersHandlerFunc(func(params o
 
 var OffersCreateOfferHandler = offers.CreateOfferHandlerFunc(func(params offers.CreateOfferParams, principal interface{}) middleware.Responder {
 	user := principal.(*backend.User)
-	offer, err := store.CreateOffer(user, params.TaskID, params.Offer)
+	offer, err := Store.CreateOffer(user, params.TaskID, params.Offer)
 	if err != nil {
 		return util.ConvertHTTPErrorToResponse(err)
 	}

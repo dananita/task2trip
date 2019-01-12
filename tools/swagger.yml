@@ -286,6 +286,7 @@ definitions:
     required:
       - id
       - name
+      - description
       - category
       - budgetEstimate
     properties:
@@ -294,6 +295,9 @@ definitions:
       name:
         type: string
         example: Buy a vodka
+      description:
+        type: string
+        example: 40 degrees
       createTime:
         type: string
         format: date-time
