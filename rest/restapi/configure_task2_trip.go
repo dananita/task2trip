@@ -4,7 +4,6 @@ package restapi
 
 import (
 	"crypto/tls"
-	"github.com/itimofeev/task2trip/backend/handlers"
 	"github.com/itimofeev/task2trip/util"
 	"net/http"
 
@@ -37,9 +36,9 @@ func configureAPI(api *operations.Task2TripAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Applies when the "X-Auth-Token" header is set
-	api.AuthTokenAuth = handlers.AuthFunc
+	api.AuthTokenAuth = AuthFunc
 
-	handlers.Init()
+	Init()
 
 	// Set your custom authorizer if needed. Default one is security.Authorized()
 	// Expected interface runtime.Authorizer
@@ -47,18 +46,18 @@ func configureAPI(api *operations.Task2TripAPI) http.Handler {
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
 
-	api.MiscAboutHandler = handlers.AboutHandler
+	api.MiscAboutHandler = AboutHandler
 
-	api.TasksCreateTaskHandler = handlers.TasksCreateTaskHandler
+	api.TasksCreateTaskHandler = TasksCreateTaskHandler
 
-	api.CategoriesListCategoriesHandler = handlers.CategoriesListCategoriesHandler
-	api.OffersListTaskOffersHandler = handlers.OffersListTaskOffersHandler
-	api.OffersCreateOfferHandler = handlers.OffersCreateOfferHandler
+	api.CategoriesListCategoriesHandler = CategoriesListCategoriesHandler
+	api.OffersListTaskOffersHandler = OffersListTaskOffersHandler
+	api.OffersCreateOfferHandler = OffersCreateOfferHandler
 
-	api.TasksSearchTasksHandler = handlers.TasksSearchTasksHandler
-	api.UsersUserLoginHandler = handlers.UsersUserLoginHandler
-	api.UsersUserSignupHandler = handlers.UserSignupHandlerFunc
-	api.UsersCurrentUserHandler = handlers.UsersCurrentUserHandler
+	api.TasksSearchTasksHandler = TasksSearchTasksHandler
+	api.UsersUserLoginHandler = UsersUserLoginHandler
+	api.UsersUserSignupHandler = UserSignupHandlerFunc
+	api.UsersCurrentUserHandler = UsersCurrentUserHandler
 
 	api.ServerShutdown = func() {}
 

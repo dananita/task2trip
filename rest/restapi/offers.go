@@ -1,4 +1,4 @@
-package handlers
+package restapi
 
 import (
 	"github.com/go-openapi/runtime/middleware"

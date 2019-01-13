@@ -1,4 +1,4 @@
-package tests
+package restapi
 
 import (
 	"fmt"

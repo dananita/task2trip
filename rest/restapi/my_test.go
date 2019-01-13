@@ -1,28 +1,25 @@
-package tests
+package restapi
 
 import (
 	"github.com/go-openapi/loads"
-	"github.com/itimofeev/task2trip/backend/handlers"
 	client2 "github.com/itimofeev/task2trip/rest/client"
 	"github.com/itimofeev/task2trip/rest/client/tasks"
 	"github.com/itimofeev/task2trip/rest/client/users"
 	"github.com/itimofeev/task2trip/rest/models"
-	"github.com/itimofeev/task2trip/rest/restapi"
 	"github.com/itimofeev/task2trip/rest/restapi/operations"
 	"github.com/itimofeev/task2trip/util"
 	"github.com/itimofeev/task2trip/util/client"
 	"github.com/stretchr/testify/require"
-	"log"
 	"testing"
 )
 
-func Init() *client2.Task2Trip {
-	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
+func InitTestAPI() *client2.Task2Trip {
+	swaggerSpec, err := loads.Spec("/Users/ilyatimofee/prog/axxonsoft/src/github.com/itimofeev/task2trip/tools/swagger.yml")
 	if err != nil {
-		log.Fatalln(err)
+		util.Log.Fatalln(err)
 	}
 	api := operations.NewTask2TripAPI(swaggerSpec)
-	server := restapi.NewServer(api)
+	server := NewServer(api)
 	server.ConfigureAPI()
 
 	handler := server.GetHandler()
@@ -34,7 +31,7 @@ func Init() *client2.Task2Trip {
 	return client2.New(c, nil)
 }
 
-var api = Init()
+var api = InitTestAPI()
 
 func Test_User_SignUP(t *testing.T) {
 	email := util.RandEmail()
@@ -67,7 +64,7 @@ func withRandomUser(t *testing.T, f func(authToken string)) {
 
 func Test_User_CreateTask(t *testing.T) {
 	withRandomUser(t, func(authToken string) {
-		cats, err := handlers.Store.ListCategories()
+		cats, err := Store.ListCategories()
 		require.NoError(t, err)
 
 		taskCreatedOk, err := api.Tasks.CreateTask(tasks.NewCreateTaskParams().WithTask(&models.TaskCreateParams{
