@@ -42,7 +42,7 @@ type Offer struct {
 }
 
 type Store interface {
-	GetUserByID(token string) (*User, error)
+	GetUserByID(id string) (*User, error)
 	GetUserByEmailAndPassword(email, password string) (user *User, err error)
 	CreateUser(email, password string) (user *User, err error)
 	CreateTask(user *User, params *models.TaskCreateParams) (task *Task, err error)

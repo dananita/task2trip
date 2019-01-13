@@ -34,28 +34,26 @@ func InitTestAPI() *client2.Task2Trip {
 var api = InitTestAPI()
 
 func Test_Task_Create(t *testing.T) {
-	withRandomUser(t, func(authToken string) {
-		createTask(t, authToken)
-	})
+	createTask(t, createUser(t))
 }
 
 func Test_Offer_Create(t *testing.T) {
-	withRandomUser(t, func(user1 string) {
-		task := createTask(t, user1)
-		withRandomUser(t, func(user2 string) {
-			offer, err := api.Offers.CreateOffer(offers.NewCreateOfferParams().WithOffer(offers.CreateOfferBody{
-				Price:   util.PtrFromInt64(777),
-				Comment: "hello, there",
-			}).WithTaskID(*task.ID), &TokenAuth{AuthToken: user2})
-			require.NoError(t, err)
+	user1 := createUser(t)
+	user2 := createUser(t)
 
-			require.Equal(t, util.PtrFromInt64(777), offer.Payload.Price)
-			require.Equal(t, "hello, there", offer.Payload.Comment)
-		})
-	})
+	task := createTask(t, user1)
+
+	offer, err := api.Offers.CreateOffer(offers.NewCreateOfferParams().WithOffer(offers.CreateOfferBody{
+		Price:   util.PtrFromInt64(777),
+		Comment: "hello, there",
+	}).WithTaskID(*task.ID), userAuth(user2))
+	require.NoError(t, err)
+
+	require.Equal(t, util.PtrFromInt64(777), offer.Payload.Price)
+	require.Equal(t, "hello, there", offer.Payload.Comment)
 }
 
-func createTask(t *testing.T, authToken string) *models.Task {
+func createTask(t *testing.T, user *models.User) *models.Task {
 	cats, err := Store.ListCategories()
 	require.NoError(t, err)
 
@@ -64,7 +62,7 @@ func createTask(t *testing.T, authToken string) *models.Task {
 		BudgetEstimate: util.PtrFromInt64(100),
 		CategoryID:     util.PtrFromString(cats[0].ID),
 		Description:    util.PtrFromString("my super Description"),
-	}), &TokenAuth{AuthToken: authToken})
+	}), userAuth(user))
 
 	require.NoError(t, err)
 	require.Equal(t, taskCreatedOk.Payload.Name, util.PtrFromString("my super Task"))

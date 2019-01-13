@@ -11,15 +11,24 @@ import (
 	"testing"
 )
 
-type TokenAuth struct {
-	AuthToken string
+func userAuth(user *models.User) runtime.ClientAuthInfoWriter {
+	return &UserAuth{user}
 }
 
-func (a *TokenAuth) AuthenticateRequest(r runtime.ClientRequest, _ strfmt.Registry) error {
-	return r.SetHeaderParam("Authorization", fmt.Sprintf("Bearer %s", a.AuthToken))
+type UserAuth struct {
+	user *models.User
 }
 
-func withRandomUser(t *testing.T, f func(authToken string)) {
+func (a *UserAuth) AuthenticateRequest(r runtime.ClientRequest, _ strfmt.Registry) error {
+	token := util.GenerateAuthToken(&util.Claims{
+		UserName: *a.user.Name,
+		UserID:   *a.user.ID,
+	})
+
+	return r.SetHeaderParam("Authorization", fmt.Sprintf("Bearer %s", token))
+}
+
+func createUser(t *testing.T) *models.User {
 	email := util.RandEmail()
 	pass := "hello, there"
 
@@ -27,12 +36,12 @@ func withRandomUser(t *testing.T, f func(authToken string)) {
 	require.NoError(t, err)
 	require.Equal(t, email, *signUpOk.Payload.Name)
 
-	loginOk, err := api.Users.UserLogin(users.NewUserLoginParams().WithCredentials(users.UserLoginBody{Email: &email, Password: &pass}))
+	_, err = api.Users.UserLogin(users.NewUserLoginParams().WithCredentials(users.UserLoginBody{Email: &email, Password: &pass}))
 	require.NoError(t, err)
 
-	currentUserOk, err := api.Users.CurrentUser(users.NewCurrentUserParams(), &TokenAuth{AuthToken: loginOk.Payload.AuthToken})
+	currentUserOk, err := api.Users.CurrentUser(users.NewCurrentUserParams(), userAuth(signUpOk.Payload))
 	require.NoError(t, err)
 	require.Equal(t, email, *currentUserOk.Payload.Name)
 
-	f(loginOk.Payload.AuthToken)
+	return currentUserOk.Payload
 }
