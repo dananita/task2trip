@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
+	"github.com/itimofeev/task2trip/rest/client/tasks"
 	"github.com/itimofeev/task2trip/rest/client/users"
 	"github.com/itimofeev/task2trip/rest/models"
 	"github.com/itimofeev/task2trip/util"
@@ -19,11 +20,15 @@ type UserAuth struct {
 	user *models.User
 }
 
-func (a *UserAuth) AuthenticateRequest(r runtime.ClientRequest, _ strfmt.Registry) error {
-	token := util.GenerateAuthToken(&util.Claims{
-		UserName: *a.user.Name,
-		UserID:   *a.user.ID,
+func generateAuthToken(user *models.User) string {
+	return util.GenerateAuthToken(&util.Claims{
+		UserName: *user.Name,
+		UserID:   *user.ID,
 	})
+}
+
+func (a *UserAuth) AuthenticateRequest(r runtime.ClientRequest, _ strfmt.Registry) error {
+	token := generateAuthToken(a.user)
 
 	return r.SetHeaderParam("Authorization", fmt.Sprintf("Bearer %s", token))
 }
@@ -44,4 +49,24 @@ func createUser(t *testing.T) *models.User {
 	require.Equal(t, email, *currentUserOk.Payload.Name)
 
 	return currentUserOk.Payload
+}
+
+func createTask(t *testing.T, user *models.User) *models.Task {
+	cats, err := Store.ListCategories()
+	require.NoError(t, err)
+
+	taskCreatedOk, err := api.Tasks.CreateTask(tasks.NewCreateTaskParams().WithTask(&models.TaskCreateParams{
+		Name:           util.PtrFromString("my super Task"),
+		BudgetEstimate: util.PtrFromInt64(100),
+		CategoryID:     util.PtrFromString(cats[0].ID),
+		Description:    util.PtrFromString("my super Description"),
+	}), userAuth(user))
+
+	require.NoError(t, err)
+	require.Equal(t, taskCreatedOk.Payload.Name, util.PtrFromString("my super Task"))
+	require.Equal(t, taskCreatedOk.Payload.BudgetEstimate, util.PtrFromInt64(100))
+	require.Equal(t, taskCreatedOk.Payload.Category.ID, util.PtrFromString(cats[0].ID))
+	require.Equal(t, taskCreatedOk.Payload.Description, util.PtrFromString("my super Description"))
+
+	return taskCreatedOk.Payload
 }

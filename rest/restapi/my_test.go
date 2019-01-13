@@ -5,7 +5,6 @@ import (
 	client2 "github.com/itimofeev/task2trip/rest/client"
 	"github.com/itimofeev/task2trip/rest/client/offers"
 	"github.com/itimofeev/task2trip/rest/client/tasks"
-	"github.com/itimofeev/task2trip/rest/models"
 	"github.com/itimofeev/task2trip/rest/restapi/operations"
 	"github.com/itimofeev/task2trip/util"
 	"github.com/itimofeev/task2trip/util/client"
@@ -51,24 +50,12 @@ func Test_Offer_Create(t *testing.T) {
 	offersList, err := api.Offers.ListTaskOffers(offers.NewListTaskOffersParams().WithTaskID(*task.ID), userAuth(user1))
 	require.NoError(t, err)
 	require.Len(t, offersList.Payload, 1)
-}
 
-func createTask(t *testing.T, user *models.User) *models.Task {
-	cats, err := Store.ListCategories()
+	token := generateAuthToken(user1)
+	tasksPage, err := api.Tasks.SearchTasks(tasks.NewSearchTasksParams().
+		WithAuthorization(&token).
+		WithUserID(user1.ID))
 	require.NoError(t, err)
-
-	taskCreatedOk, err := api.Tasks.CreateTask(tasks.NewCreateTaskParams().WithTask(&models.TaskCreateParams{
-		Name:           util.PtrFromString("my super Task"),
-		BudgetEstimate: util.PtrFromInt64(100),
-		CategoryID:     util.PtrFromString(cats[0].ID),
-		Description:    util.PtrFromString("my super Description"),
-	}), userAuth(user))
-
-	require.NoError(t, err)
-	require.Equal(t, taskCreatedOk.Payload.Name, util.PtrFromString("my super Task"))
-	require.Equal(t, taskCreatedOk.Payload.BudgetEstimate, util.PtrFromInt64(100))
-	require.Equal(t, taskCreatedOk.Payload.Category.ID, util.PtrFromString(cats[0].ID))
-	require.Equal(t, taskCreatedOk.Payload.Description, util.PtrFromString("my super Description"))
-
-	return taskCreatedOk.Payload
+	require.Equal(t, int64(1), tasksPage.Payload.Total)
+	require.Len(t, tasksPage.Payload.Payload, 1)
 }
