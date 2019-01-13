@@ -4,7 +4,6 @@ import (
 	"github.com/go-openapi/loads"
 	client2 "github.com/itimofeev/task2trip/rest/client"
 	"github.com/itimofeev/task2trip/rest/client/tasks"
-	"github.com/itimofeev/task2trip/rest/client/users"
 	"github.com/itimofeev/task2trip/rest/models"
 	"github.com/itimofeev/task2trip/rest/restapi/operations"
 	"github.com/itimofeev/task2trip/util"
@@ -14,7 +13,7 @@ import (
 )
 
 func InitTestAPI() *client2.Task2Trip {
-	swaggerSpec, err := loads.Spec("/Users/ilyatimofee/prog/axxonsoft/src/github.com/itimofeev/task2trip/tools/swagger.yml")
+	swaggerSpec, err := loads.Spec("../../tools/swagger.yml")
 	if err != nil {
 		util.Log.Fatalln(err)
 	}
@@ -32,35 +31,6 @@ func InitTestAPI() *client2.Task2Trip {
 }
 
 var api = InitTestAPI()
-
-func Test_User_SignUP(t *testing.T) {
-	email := util.RandEmail()
-	pass := "hello, there"
-
-	signUpOk, err := api.Users.UserSignup(users.NewUserSignupParams().WithUser(&models.UserCreateParams{Email: &email, Password: &pass}))
-	require.NoError(t, err)
-	require.Equal(t, email, *signUpOk.Payload.Name)
-
-	loginOk, err := api.Users.UserLogin(users.NewUserLoginParams().WithCredentials(users.UserLoginBody{Email: &email, Password: &pass}))
-	require.NoError(t, err)
-
-	currentUserOk, err := api.Users.CurrentUser(users.NewCurrentUserParams(), &TokenAuth{AuthToken: loginOk.Payload.AuthToken})
-	require.NoError(t, err)
-	require.Equal(t, email, *currentUserOk.Payload.Name)
-}
-
-func withRandomUser(t *testing.T, f func(authToken string)) {
-	email := util.RandEmail()
-	pass := "hello, there"
-
-	signUpOk, err := api.Users.UserSignup(users.NewUserSignupParams().WithUser(&models.UserCreateParams{Email: &email, Password: &pass}))
-	require.NoError(t, err)
-	require.Equal(t, email, *signUpOk.Payload.Name)
-
-	loginOk, err := api.Users.UserLogin(users.NewUserLoginParams().WithCredentials(users.UserLoginBody{Email: &email, Password: &pass}))
-	require.NoError(t, err)
-	f(loginOk.Payload.AuthToken)
-}
 
 func Test_User_CreateTask(t *testing.T) {
 	withRandomUser(t, func(authToken string) {
