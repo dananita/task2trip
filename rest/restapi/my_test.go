@@ -3,6 +3,7 @@ package restapi
 import (
 	"github.com/go-openapi/loads"
 	client2 "github.com/itimofeev/task2trip/rest/client"
+	"github.com/itimofeev/task2trip/rest/client/offers"
 	"github.com/itimofeev/task2trip/rest/client/tasks"
 	"github.com/itimofeev/task2trip/rest/models"
 	"github.com/itimofeev/task2trip/rest/restapi/operations"
@@ -32,22 +33,44 @@ func InitTestAPI() *client2.Task2Trip {
 
 var api = InitTestAPI()
 
-func Test_User_CreateTask(t *testing.T) {
+func Test_Task_Create(t *testing.T) {
 	withRandomUser(t, func(authToken string) {
-		cats, err := Store.ListCategories()
-		require.NoError(t, err)
-
-		taskCreatedOk, err := api.Tasks.CreateTask(tasks.NewCreateTaskParams().WithTask(&models.TaskCreateParams{
-			Name:           util.PtrFromString("my super Task"),
-			BudgetEstimate: util.PtrFromInt64(100),
-			CategoryID:     util.PtrFromString(cats[0].ID),
-			Description:    util.PtrFromString("my super Description"),
-		}), &TokenAuth{AuthToken: authToken})
-
-		require.NoError(t, err)
-		require.Equal(t, taskCreatedOk.Payload.Name, util.PtrFromString("my super Task"))
-		require.Equal(t, taskCreatedOk.Payload.BudgetEstimate, util.PtrFromInt64(100))
-		require.Equal(t, taskCreatedOk.Payload.Category.ID, util.PtrFromString(cats[0].ID))
-		require.Equal(t, taskCreatedOk.Payload.Description, util.PtrFromString("my super Description"))
+		createTask(t, authToken)
 	})
+}
+
+func Test_Offer_Create(t *testing.T) {
+	withRandomUser(t, func(user1 string) {
+		task := createTask(t, user1)
+		withRandomUser(t, func(user2 string) {
+			offer, err := api.Offers.CreateOffer(offers.NewCreateOfferParams().WithOffer(offers.CreateOfferBody{
+				Price:   util.PtrFromInt64(777),
+				Comment: "hello, there",
+			}).WithTaskID(*task.ID), &TokenAuth{AuthToken: user2})
+			require.NoError(t, err)
+
+			require.Equal(t, util.PtrFromInt64(777), offer.Payload.Price)
+			require.Equal(t, "hello, there", offer.Payload.Comment)
+		})
+	})
+}
+
+func createTask(t *testing.T, authToken string) *models.Task {
+	cats, err := Store.ListCategories()
+	require.NoError(t, err)
+
+	taskCreatedOk, err := api.Tasks.CreateTask(tasks.NewCreateTaskParams().WithTask(&models.TaskCreateParams{
+		Name:           util.PtrFromString("my super Task"),
+		BudgetEstimate: util.PtrFromInt64(100),
+		CategoryID:     util.PtrFromString(cats[0].ID),
+		Description:    util.PtrFromString("my super Description"),
+	}), &TokenAuth{AuthToken: authToken})
+
+	require.NoError(t, err)
+	require.Equal(t, taskCreatedOk.Payload.Name, util.PtrFromString("my super Task"))
+	require.Equal(t, taskCreatedOk.Payload.BudgetEstimate, util.PtrFromInt64(100))
+	require.Equal(t, taskCreatedOk.Payload.Category.ID, util.PtrFromString(cats[0].ID))
+	require.Equal(t, taskCreatedOk.Payload.Description, util.PtrFromString("my super Description"))
+
+	return taskCreatedOk.Payload
 }
