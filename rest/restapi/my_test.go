@@ -33,10 +33,6 @@ func InitTestAPI() *client2.Task2Trip {
 
 var api = InitTestAPI()
 
-func Test_Task_Create(t *testing.T) {
-	createTask(t, createUser(t))
-}
-
 func Test_Offer_Create(t *testing.T) {
 	user1 := createUser(t)
 	user2 := createUser(t)
@@ -51,6 +47,10 @@ func Test_Offer_Create(t *testing.T) {
 
 	require.Equal(t, util.PtrFromInt64(777), offer.Payload.Price)
 	require.Equal(t, "hello, there", offer.Payload.Comment)
+
+	offersList, err := api.Offers.ListTaskOffers(offers.NewListTaskOffersParams().WithTaskID(*task.ID), userAuth(user1))
+	require.NoError(t, err)
+	require.Len(t, offersList.Payload, 1)
 }
 
 func createTask(t *testing.T, user *models.User) *models.Task {
