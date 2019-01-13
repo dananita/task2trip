@@ -23,7 +23,7 @@ func NewStore(connectURL string) backend.Store {
 		if err != nil {
 			panic(err)
 		}
-		util.Log.Printf("%s %s", time.Since(event.StartTime), query)
+		util.Log.WithField("duration", time.Since(event.StartTime)).Debug(query)
 	})
 
 	store := &Store{

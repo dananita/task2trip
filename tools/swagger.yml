@@ -229,6 +229,22 @@ paths:
           schema:
             $ref: '#/definitions/User'
 
+  /chat:
+    get:
+      tags:
+        - chat
+      security:
+        - AuthToken: []
+      summary: list chats of current user
+      operationId: listChats
+      produces:
+        - application/json
+      responses:
+        200:
+          description: user
+          schema:
+            $ref: '#/definitions/ChatPage'
+
   /about:
     get:
       tags:
@@ -354,6 +370,35 @@ definitions:
         type: integer
       user:
         $ref: '#/definitions/User'
+
+  ChatPage:
+    type: object
+    properties:
+      payload:
+        type: array
+        items:
+          $ref: '#/definitions/Chat'
+      total:
+        type: integer
+
+  Chat:
+    type: object
+    properties:
+      id:
+        type: string
+      user:
+        $ref: '#/definitions/User'
+
+  Message:
+    type: object
+    properties:
+      id:
+        type: string
+      value:
+        type: string
+      time:
+        type: string
+        format: date-time
 
 host: "somehost.ru"
 schemes:

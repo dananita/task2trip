@@ -41,6 +41,21 @@ type Offer struct {
 	CreateTime time.Time `sql:",notnull"`
 }
 
+type Chat struct {
+	ID         string
+	User1ID    string `sql:",notnull"`
+	User2ID    string `sql:",notnull"`
+	CreateTime time.Time
+}
+
+type Message struct {
+	ID         string
+	ChatID     string `sql:",notnull"`
+	UserID     string `sql:",notnull"`
+	CreateTime time.Time
+	Value      string
+}
+
 type Store interface {
 	GetUserByID(id string) (*User, error)
 	GetUserByEmailAndPassword(email, password string) (user *User, err error)
