@@ -1,9 +1,9 @@
 package backend
 
 import (
-	"github.com/itimofeev/task2trip/rest/models"
-	"github.com/itimofeev/task2trip/rest/restapi/operations/offers"
-	"github.com/itimofeev/task2trip/rest/restapi/operations/tasks"
+	"github.com/itimofeev/task2trip/backend/rest/models"
+	"github.com/itimofeev/task2trip/backend/rest/restapi/operations/offers"
+	"github.com/itimofeev/task2trip/backend/rest/restapi/operations/tasks"
 	"time"
 )
 

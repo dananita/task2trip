@@ -3,7 +3,7 @@ package restapi
 import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/itimofeev/task2trip/backend"
-	"github.com/itimofeev/task2trip/rest/restapi/operations/offers"
+	"github.com/itimofeev/task2trip/backend/rest/restapi/operations/offers"
 	"github.com/itimofeev/task2trip/util"
 )
 

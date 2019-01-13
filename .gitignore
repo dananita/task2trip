@@ -11,10 +11,10 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-rest/client
-rest/cmd
-rest/models
-rest/restapi/operations
-rest/restapi/doc.go
-rest/restapi/embedded_spec.go
-rest/restapi/server.go
+backend/rest/client
+backend/rest/cmd
+backend/rest/models
+backend/rest/restapi/operations
+backend/rest/restapi/doc.go
+backend/rest/restapi/embedded_spec.go
+backend/rest/restapi/server.go

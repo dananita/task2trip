@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 
-	"github.com/itimofeev/task2trip/rest/restapi/operations"
+	"github.com/itimofeev/task2trip/backend/rest/restapi/operations"
 )
 
 //go:generate swagger generate server --target ../rest --name Task2Trip --spec ../tools/swagger.yml

@@ -23,14 +23,14 @@ gen-server:
 	mkdir -p rest
 	docker run --rm -v $(GOPATH):/go/ -w /go/src/$(REPO_PATH) -t $(SWAGGER_IMAGE) \
 		generate server \
-		--target=rest \
+		--target=backend/rest \
 		-f tools/swagger.yml
 
 gen-client:
 	mkdir -p rest
 	docker run --rm -v $(GOPATH):/go/ -w /go/src/$(REPO_PATH) -t $(SWAGGER_IMAGE) \
 		generate client \
-		--target=rest \
+		--target=backend/rest \
 		-f tools/swagger.yml
 
 download:
@@ -85,4 +85,4 @@ build-image:
 	docker image save $(REPO_NAME) -o $(REPO_NAME).img
 
 build:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o $$GOPATH/bin/linux_amd64/task2trip $(REPO_PATH)/rest/cmd/task2-trip-server
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o $$GOPATH/bin/linux_amd64/task2trip $(REPO_PATH)/backend/rest/cmd/task2-trip-server

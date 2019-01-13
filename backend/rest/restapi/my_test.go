@@ -2,10 +2,10 @@ package restapi
 
 import (
 	"github.com/go-openapi/loads"
-	client2 "github.com/itimofeev/task2trip/rest/client"
-	"github.com/itimofeev/task2trip/rest/client/offers"
-	"github.com/itimofeev/task2trip/rest/client/tasks"
-	"github.com/itimofeev/task2trip/rest/restapi/operations"
+	client2 "github.com/itimofeev/task2trip/backend/rest/client"
+	"github.com/itimofeev/task2trip/backend/rest/client/offers"
+	"github.com/itimofeev/task2trip/backend/rest/client/tasks"
+	"github.com/itimofeev/task2trip/backend/rest/restapi/operations"
 	"github.com/itimofeev/task2trip/util"
 	"github.com/itimofeev/task2trip/util/client"
 	"github.com/stretchr/testify/require"
@@ -13,7 +13,7 @@ import (
 )
 
 func InitTestAPI() *client2.Task2Trip {
-	swaggerSpec, err := loads.Spec("../../tools/swagger.yml")
+	swaggerSpec, err := loads.Spec("../../../tools/swagger.yml")
 	if err != nil {
 		util.Log.Fatalln(err)
 	}

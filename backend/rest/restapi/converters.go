@@ -3,7 +3,7 @@ package restapi
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/itimofeev/task2trip/backend"
-	"github.com/itimofeev/task2trip/rest/models"
+	"github.com/itimofeev/task2trip/backend/rest/models"
 )
 
 func convertUser(user *backend.User) *models.User {
