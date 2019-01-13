@@ -18,8 +18,8 @@ before_install:
 
 install:
   - godep restore
-  - swagger generate client --target=rest -f tools/swagger.yml
-  - swagger generate server --target=rest -f tools/swagger.yml
+  - swagger generate client --target=backend/rest -f tools/swagger.yml
+  - swagger generate server --target=backend/rest -f tools/swagger.yml
 
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic -v ./...
